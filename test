@@ -1,0 +1,82 @@
+import turtle as trtl
+import random as rand
+import time
+import math
+import threading
+jumper = trtl.Turtle()
+jumper_image = "icon.gif"
+wn = trtl.Screen()
+wn.addshape(jumper_image)
+wn.bgpic("editedback.gif")
+wn.setup(width=1.0, height=1.0)
+jumper.shape(jumper_image)
+jumper.penup()
+always = "true"
+counter = 0
+#
+spike = trtl.Turtle()
+spike.penup()
+spike_image = "spike.gif"
+wn.addshape(spike_image)
+spike.shape(spike_image)
+# BASE LINE = -250, -165
+jumper.goto(-230, -165)
+spike.goto(280, -165)
+spike.speed(0.05)
+writer = trtl.Turtle()
+writer.penup()
+writer.hideturtle()
+def generate():
+  while spike.xcor() > -280:
+    curx = spike.xcor()
+    newx = (curx - 10)
+    time.sleep(0.02)
+    spike.setx(newx)
+    check()
+  else:
+    spike.hideturtle()
+    spike.setx(280)
+    spike.showturtle()
+def collision():
+  spikex = spike.xcor()
+  jumperx = jumper.xcor()
+  dist = math.dist(spikex, jumperx)
+  if dist < 10:
+    spikey = spike.ycor()
+    jumpery = jumper.ycor()
+    disty = math.dist(spikey, jumpery)
+    if disty < 2:
+      spike.hideturtle()
+      jumper.hideturtle()
+      writer.write("You Lose.")
+      time.sleep(2)
+      writer.clear()
+def jump():
+  global cury
+  global newy
+  cury = jumper.ycor()
+  newy = (cury + 200)
+  jumper.sety(newy)
+  time.sleep(0.5)
+  jumper.sety(cury)
+
+
+thre1 = threading.Thread(target=generate)
+thre2 = threading.Thread(target=jump)
+
+thre1.start()
+thre2.start()
+
+def check():
+  wn.onkeypress(jump, "w")
+  wn.listen()
+  generate()
+#
+writer.write("Press w to start")
+time.sleep(0)
+writer.clear()
+while always == "true":
+  check()
+  wn.mainloop()
+  
+  
